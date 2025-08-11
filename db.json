@@ -1,0 +1,127 @@
+{
+  "category": [
+    {
+      "id": "1",
+      "name": "all",
+      "icon": "cube-outline"
+    },
+    {
+      "id": "2",
+      "name": "Lamp",
+      "icon": "bulb"
+    },
+    {
+      "id": "3", 
+      "name": "Desk",
+      "icon": "desktop"
+    },
+    {
+      "id": "4",
+      "name": "Chair",
+      "icon": "bed"
+    },
+    {
+      "id": "5",
+      "name": "Other",
+      "icon": "ellipsis-horizontal"
+    }
+    
+  ],
+  "product": [
+    {
+      "id": "1",
+      "name": "Black Simple Lamp",
+      "price": "12.00",
+      "image": "product.jpg",
+      "description": "A modern, minimalistic black lamp perfect for study or work desks.",
+      "categoryId": "1"
+    },
+    {
+      "id": "2",
+      "name": "Minimal Stand",
+      "price": "25.00",
+      "image": "product2.jpg",
+      "description": "A sleek stand made from lightweight materials for your everyday tech gear.",
+      "categoryId": "2"
+    },
+    {
+      "id": "3",
+      "name": "Minimal Stand",
+      "price": "25.00",
+      "image": "product3.jpg",
+      "description": "Elegant and space-saving design, ideal for home or office setups.",
+      "categoryId": "2"
+    },
+    {
+      "id": "4",
+      "name": "Minimal Stand",
+      "price": "25.00",
+      "image": "product4.jpg",
+      "description": "Durable and stylish stand to keep your workspace tidy and modern.",
+      "categoryId": "2"
+    },
+    {
+      "id": "5",
+      "name": "Minimal Stand",
+      "price": "25.00",
+      "image": "../assets/product4.jpg",
+      "description": "Durable and stylish stand to keep your workspace tidy and modern.",
+      "categoryId": "2"
+    },
+    {
+      "id": "6",
+      "name": "Comfortable Chair",
+      "price": "89.00",
+      "image": "product.jpg",
+      "description": "Ergonomic chair for maximum comfort during long work sessions.",
+      "categoryId": "3"
+    },
+    {
+      "id": "7",
+      "name": "Office Chair",
+      "price": "120.00",
+      "image": "product2.jpg",
+      "description": "Professional office chair with adjustable features.",
+      "categoryId": "3"
+    },
+    {
+      "id": "8",
+      "name": "Wall Clock",
+      "price": "35.00",
+      "image": "product3.jpg",
+      "description": "Elegant wall clock to complement any room decor.",
+      "categoryId": "4"
+    },
+    {
+      "id": "9",
+      "name": "Plant Pot",
+      "price": "18.00",
+      "image": "product4.jpg",
+      "description": "Beautiful ceramic plant pot for indoor plants.",
+      "categoryId": "4"
+    }
+  ],
+  "user": [
+    {
+      "id": "1",
+      "name": "Test User",
+      "email": "user@example.com",
+      "password": "123456",
+      "role": "user"
+    },
+    {
+      "id": "2",
+      "name": "Admin User",
+      "email": "admin@example.com",
+      "password": "123456",
+      "role": "admin"
+    },
+    {
+      "id": "4d66",
+      "name": "phong",
+      "email": "aa@gmail.com",
+      "password": "123123",
+      "role": "user"
+    }
+  ]
+}

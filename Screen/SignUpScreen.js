@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -9,14 +10,84 @@ import {
   SafeAreaView,
   Image,
   KeyboardAvoidingView,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
+import { registerUser } from "../Redux/actions/authAction";
+import { clearError } from "../Redux/reducer/authReducer";
 
 const SignUpScreen = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState('');
-    const [confirm, setConfirm] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const nav = useNavigation();
+    const dispatch = useDispatch();
+    const { isLoading, error } = useSelector((state) => state.auth);
+
+    // Clear error when component mounts
+    useEffect(() => {
+      dispatch(clearError());
+    }, [dispatch]);
+
+    // Handle successful registration
+    useEffect(() => {
+      if (!isLoading && !error) {
+        // Có thể thêm logic để tự động chuyển về login hoặc hiển thị thông báo
+      }
+    }, [isLoading, error]);
+
+    // Validation functions
+    const validateEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+
+    const validatePassword = (password) => {
+      return password.length >= 6;
+    };
+
+    // Handle registration
+    const handleSignUp = () => {
+      // Clear previous errors
+      dispatch(clearError());
+
+      // Validation
+      if (!name.trim()) {
+        Alert.alert('Lỗi', 'Vui lòng nhập tên');
+        return;
+      }
+
+      if (!email.trim()) {
+        Alert.alert('Lỗi', 'Vui lòng nhập email');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        Alert.alert('Lỗi', 'Email không hợp lệ');
+        return;
+      }
+
+      if (!password) {
+        Alert.alert('Lỗi', 'Vui lòng nhập mật khẩu');
+        return;
+      }
+
+      if (!validatePassword(password)) {
+        Alert.alert('Lỗi', 'Mật khẩu phải có ít nhất 6 ký tự');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        Alert.alert('Lỗi', 'Mật khẩu xác nhận không khớp');
+        return;
+      }
+
+      // Dispatch register action
+      dispatch(registerUser({ name: name.trim(), email: email.trim(), password }));
+
+      nav.navigate('LoginScreen');
+    };
   
     return (
       <View style={styles.container}>
@@ -59,12 +130,25 @@ const SignUpScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
-          value={confirm}
-          onChangeText={setConfirm}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
           secureTextEntry
         />
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+
+        {error && (
+          <Text style={styles.errorText}>{error}</Text>
+        )}
+
+        <TouchableOpacity 
+          onPress={handleSignUp} 
+          style={[styles.button, isLoading && styles.buttonDisabled]}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#fff" size="small" />
+          ) : (
+            <Text style={styles.buttonText}>Sign Up</Text>
+          )}
         </TouchableOpacity>
         <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 12}}>
             <Text style={{fontSize: 14, fontWeight: '600', color: '#909090'}}>Already have account? </Text>
@@ -128,6 +212,15 @@ const styles = StyleSheet.create({
       marginTop: 20,
       fontWeight: '600',
       textAlign: 'center'
+    },
+    errorText: {
+      color: '#ff0000',
+      fontSize: 14,
+      textAlign: 'center',
+      marginBottom: 10,
+    },
+    buttonDisabled: {
+      backgroundColor: '#666',
     },
     box:{
       backgroundColor: 'white',

@@ -10,6 +10,7 @@ import {
   Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { getImageSource } from "../utils/imageHelper";
 
 const ProductDetails = ({ navigation, route }) => {
   const { item } = route.params;
@@ -33,7 +34,7 @@ const ProductDetails = ({ navigation, route }) => {
       </View>
 
       {/* IMAGE */}
-      <Image source={ item.image } style={styles.image} />
+      <Image source={ getImageSource(item.image) } style={styles.image} />
 
       {/* COLOR OPTIONS */}
       <View style={styles.colorOptions}>

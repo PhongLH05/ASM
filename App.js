@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 import LoginScreen from './Screen/LoginScreen';
 import Splash from './Screen/Splash';
 import SignUpScreen from './Screen/SignUpScreen';
@@ -11,37 +12,52 @@ import CartScreen from './Screen/CartScreen';
 import FavoriteScreen from './Screen/FavoriteScreen';
 import SettingScreen from './Screen/SettingScreen';
 import ProductDetails from './Screen/ProductDetails';
+import AdminScreen from './Screen/AdminScreen';
+import QLSPScreen from './Screen/QLSPScreen';
+
+import store from './Redux/store/store'
+import { Provider } from 'react-redux';
 
 
 
 
-export default function App() {
-
+// Component để quản lý navigation dựa trên trạng thái auth
+function AppNavigator() {
   const Stack = createStackNavigator();
 
-
   return (
-   
-      <NavigationContainer>
-      <Stack.Navigator initialRouteName='Splash' screenOptions={{headerShown: false}}>
-
-      <Stack.Screen name='LoginScreen' component={LoginScreen} />
+    <Stack.Navigator 
+      initialRouteName='Splash'
+      screenOptions={{headerShown: false}}
+    >
       <Stack.Screen name='Splash' component={Splash} />
+      <Stack.Screen name='LoginScreen' component={LoginScreen} />
       <Stack.Screen name='SignUpScreen' component={SignUpScreen} />
+      
+      {/* Protected routes */}
       <Stack.Screen name='HomeScreen' component={HomeScreen} />
       <Stack.Screen
-          name="Tab"
-          component={Tab}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name='CartScreen' component={CartScreen} />
-        <Stack.Screen name='FavoriteScreen' component={FavoriteScreen} />
-        <Stack.Screen name='SettingScreen' component={SettingScreen} />
-        <Stack.Screen name='ProductDetails' component={ProductDetails} />
+        name="Tab"
+        component={Tab}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name='CartScreen' component={CartScreen} />
+      <Stack.Screen name='FavoriteScreen' component={FavoriteScreen} />
+      <Stack.Screen name='SettingScreen' component={SettingScreen} />
+      <Stack.Screen name='ProductDetails' component={ProductDetails} />
+      <Stack.Screen name='AdminScreen' component={AdminScreen} />
+      <Stack.Screen name='QLSPScreen' component={QLSPScreen} />
+    </Stack.Navigator>
+  );
+}
 
-      </Stack.Navigator>
-    </NavigationContainer>
-    
+export default function App() {
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 }
 

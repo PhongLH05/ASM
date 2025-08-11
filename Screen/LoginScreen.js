@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -9,13 +10,43 @@ import {
   SafeAreaView,
   Image,
   KeyboardAvoidingView,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
-
+import { loginUser } from "../Redux/actions/authAction";
+import { clearError } from "../Redux/reducer/authReducer";
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const nav = useNavigation();
+  const dispatch = useDispatch();
+  const { isLoading, error, isAuthenticated, role } = useSelector((state) => state.auth);
+
+  // Handle navigation based on role after successful login
+  useEffect(() => {
+    if (isAuthenticated && role) {
+      if (role === 'admin') {
+        nav.navigate('AdminScreen');
+      } else {
+        nav.navigate('Tab');
+      }
+    }
+  }, [isAuthenticated, role, nav]);
+
+  // Clear error when component mounts
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
+  // Handle login
+  const handleLogin = () => {
+    if (!email || !password) {
+      Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ email và mật khẩu');
+      return;
+    }
+    dispatch(loginUser({ email, password }));
+  };
 
   return (
     <View style={styles.container}>
@@ -53,8 +84,20 @@ const LoginScreen = ({navigation}) => {
       <TouchableOpacity>
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => nav.navigate('Tab')}  style={styles.button}>
-        <Text style={styles.buttonText}>Log in</Text>
+      {error && (
+        <Text style={styles.errorText}>{error}</Text>
+      )}
+      
+      <TouchableOpacity 
+        onPress={handleLogin} 
+        style={[styles.button, isLoading && styles.buttonDisabled]}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <ActivityIndicator color="#fff" size="small" />
+        ) : (
+          <Text style={styles.buttonText}>Log in</Text>
+        )}
       </TouchableOpacity>
       <TouchableOpacity onPress={() => nav.navigate('SignUpScreen')} >
         <Text style={styles.signUp}>SIGN UP</Text>
@@ -122,6 +165,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontWeight: '600',
     textAlign: 'center'
+  },
+  errorText: {
+    color: '#ff0000',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  buttonDisabled: {
+    backgroundColor: '#666',
   },
   box:{
     backgroundColor: 'white',

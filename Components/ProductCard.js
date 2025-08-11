@@ -7,59 +7,37 @@ import {
     View,
     Dimensions,
   } from "react-native";
-  import React from "react";
+  import React, { useEffect } from "react";
   import { useNavigation } from "@react-navigation/native";
   import Icon from "react-native-vector-icons/FontAwesome";
+import { useDispatch, useSelector } from "react-redux";
+import { getListProducts } from "../Redux/actions/productAction";
+import { getImageSource } from "../utils/imageHelper";
   
   const { width } = Dimensions.get("window");
   const CARD_MARGIN = 10;
   const CARD_WIDTH = (width - CARD_MARGIN * 3) / 2;
   
-  const data = [
-    {
-        id: "1",
-        name: "Black Simple Lamp",
-        price: "12.00",
-        image: require("../assets/product.jpg"),
-        description: "A modern, minimalistic black lamp perfect for study or work desks."
-      },
-      {
-        id: "2",
-        name: "Minimal Stand",
-        price: "25.00",
-        image: require("../assets/product2.jpg"),
-        description: "A sleek stand made from lightweight materials for your everyday tech gear."
-      },
-      {
-        id: "3",
-        name: "Minimal Stand",
-        price: "25.00",
-        image: require("../assets/product3.jpg"),
-        description: "Elegant and space-saving design, ideal for home or office setups."
-      },
-      {
-        id: "4",
-        name: "Minimal Stand",
-        price: "25.00",
-        image: require("../assets/product4.jpg"),
-        description: "Durable and stylish stand to keep your workspace tidy and modern."
-      }
-  ];
-  
   const ProductCard = () => {
     const nav = useNavigation();
+    const dispatch = useDispatch();
+    const listProducts = useSelector((state) => state.product.listProducts)
+
+    useEffect(() => {
+      dispatch(getListProducts())
+    }, [dispatch])
   
     return (
       <FlatList
         contentContainerStyle={styles.container}
-        data={data}
+        data={listProducts}
         renderItem={({ item }) => (
           <Pressable
             onPress={() => nav.navigate("ProductDetails", { item })}
             style={styles.card}
           >
             <View style={styles.imageWrapper}>
-              <Image style={styles.image} source={item.image} />
+              <Image style={styles.image} source={getImageSource(item.image)} />
               <View style={styles.iconWrapper}>
                 <Icon name="shopping-bag" size={20} color="#666" />
               </View>

@@ -5,31 +5,44 @@ import {
     View,
     TouchableOpacity,
   } from "react-native";
-  import React, { useState } from "react";
-  import Ionicons from "react-native-vector-icons/Ionicons"; // 👈 Thêm dòng này
+  import React, { useState, useEffect } from "react";
+  import { useDispatch, useSelector } from "react-redux";
   import { useNavigation } from "@react-navigation/native";
+  import { getListCategories, setSelectedCategoryIdAction } from "../Redux/actions/categoryAction";
+  import { getProductsByCategoryAction, getListProducts } from "../Redux/actions/productAction";
+  import Ionicons from "react-native-vector-icons/Ionicons";
   
   const Categories = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const [selectedId, setSelectedId] = useState("1");
+    const listCategories = useSelector((state) => state.category.listCategories);
+
+    useEffect(() => {
+      dispatch(getListCategories());
+    }, [dispatch]);
   
-    const categoryList = [
-      { id: "1", icon: "star", text: "Ghế" },
-      { id: "2", icon: "desktop", text: "Bàn" },
-      { id: "3", icon: "tv", text: "Tivi" },
-      { id: "4", icon: "ellipsis-horizontal", text: "Khác" },
-    ];
+
   
     const handleCategoryPress = (id) => {
       setSelectedId(id);
       console.log("Đã chọn danh mục:", id);
-      // navigation.navigate("ProductByCategory", { categoryId: id });
+      
+      if (id === "1") {
+        // Nếu chọn category đầu tiên, hiển thị tất cả sản phẩm
+        dispatch(setSelectedCategoryIdAction(null));
+        dispatch(getListProducts());
+      } else {
+        // Dispatch action để lọc sản phẩm theo category
+        dispatch(setSelectedCategoryIdAction(id));
+        dispatch(getProductsByCategoryAction(id));
+      }
     };
   
     return (
       <View style={{ paddingHorizontal: 10 }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {categoryList.map((item) => {
+          {listCategories.map((item) => {
             const isSelected = item.id === selectedId;
   
             return (
@@ -41,13 +54,16 @@ import {
                 ]}
                 onPress={() => handleCategoryPress(item.id)}
               >
-                <View style={styles.iconWrapper}>
-                  <Ionicons
-                    name={item.icon}
-                    size={28}
-                    color={isSelected ? "#F75D5D" : "#52555A"}
-                  />
-                </View>
+                                 <View style={styles.iconWrapper}>
+                   <Ionicons
+                     name={item.icon}
+                     size={28}
+                     color={isSelected ? "#F75D5D" : "#52555A"}
+                   />
+                 </View>
+                 <Text style={[styles.categoryText, isSelected && styles.selectedCategoryText]}>
+                   {item.name}
+                 </Text>
                 
               </TouchableOpacity>
             );
@@ -85,5 +101,6 @@ import {
       fontWeight: "bold",
       fontSize: 15,
     },
+
   });
   

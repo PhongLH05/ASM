@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -9,27 +10,55 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import ic1 from "../assets/ic1.png";
 import { useNavigation } from "@react-navigation/native";
 import ProductCard from "../Components/ProductCard";
 import Categories from "../Components/Categories";
+import { logoutUser } from "../Redux/actions/authAction";
 
 const HomeScreen = () => {
-  
-
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [productsData, setProductsData] = useState([]);
+  const { user } = useSelector((state) => state.auth);
+  const { selectedCategoryId } = useSelector((state) => state.category);
+  const { listCategories } = useSelector((state) => state.category);
   const [searchText, setSearchText] = useState("");
 
-  const filteredProducts = productsData.filter((product) =>
-    product.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const handleLogout = () => {
+    Alert.alert(
+      'Đăng xuất',
+      'Bạn có chắc chắn muốn đăng xuất?',
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel',
+        },
+        {
+          text: 'Đăng xuất',
+          onPress: () => {
+            dispatch(logoutUser());
+            navigation.navigate('LoginScreen');
+          },
+        },
+      ]
+    );
+  };
+
+  // Lấy tên category được chọn
+  const selectedCategory = listCategories.find(cat => cat.id === selectedCategoryId);
+  const categoryTitle = selectedCategory ? `${selectedCategory.name} Products` : "All Products";
 
   return (
+    <SafeAreaView style={styles.container}>
+      {/* <View style={styles.header}>
+        <Text style={styles.welcomeText}>Chào mừng, {user?.name || 'User'}!</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Đăng xuất</Text>
+        </TouchableOpacity>
+      </View> */}
 
-     
-      <View style={styles.container}>
       <TextInput
         placeholder="Search"
         style={styles.input}
@@ -37,76 +66,13 @@ const HomeScreen = () => {
         value={searchText}
       />
       
-     
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Favorite")}
-        style={{
-          position: "absolute",
-          marginLeft: 330,
-          marginTop: 650,
-          zIndex: 1,
-        }}
-      >
-        <Image
-          style={{
-            height: 50,
-            width: 50,
-            backgroundColor: "white",
-            borderRadius: 100,
-          }}
-          source={require("../assets/ic5.png")}
-        />
-      </TouchableOpacity>
-
       <Text style={styles.explore}>Explore from categories</Text>
       <Categories />
-      {/* <FlatList
-        data={categoryList}
-        keyExtractor={(category) => category.id}
-        renderItem={({ item: category }) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("ChiTietSanPham", { productId: category.id })
-            }
-          >
-            <View style={styles.itemSmall}>
-              <Image style={{ width: 80, height: 80 }} source={category.icon} />
-              <Text>{category.text}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-        horizontal={true}
-      /> */}
-
+     
       <Text style={styles.textList}>New Products</Text>
-      {/* <FlatList
-        data={filteredProducts}
-        keyExtractor={(product) => product.id}
-        renderItem={({ item: product }) => (
-          <View style={styles.itemSanPham}>
-            <TouchableOpacity>
-              <Image
-                style={{ width: 130, height: 120 }}
-                source={{ uri: product.image }}
-              />
-            </TouchableOpacity>
-            <View style={styles.textSanPham}>
-              <Text style={styles.itemName}>{product.name}</Text>
-              <Text style={{ fontWeight: "bold" }}>
-                Giá: <Text style={styles.itemGia}>{product.price}</Text>
-              </Text>
-              <Text>{product.description}</Text>
-            </View>
-          </View>
-        )}
-        numColumns={2}
-        
-      /> */}
       
       <ProductCard />
-    </View>
-  
-   
+    </SafeAreaView>
   );
 };
 
@@ -114,7 +80,33 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 60
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    marginTop: 40,
+  },
+  welcomeText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+  },
+  logoutButton: {
+    backgroundColor: '#dc3545',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
   },
 
   input: {

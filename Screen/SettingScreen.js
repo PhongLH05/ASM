@@ -7,10 +7,37 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { logoutUser } from '../Redux/actions/authAction';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 const SettingScreen = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const { user } = useSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Đăng xuất',
+      'Bạn có chắc chắn muốn đăng xuất?',
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel',
+        },
+        {
+          text: 'Đăng xuất',
+          onPress: () => {
+            dispatch(logoutUser());
+            navigation.navigate('LoginScreen');
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -28,8 +55,8 @@ const SettingScreen = () => {
             style={styles.avatar}
           />
           <View style={styles.profileText}>
-            <Text style={styles.name}>Phong Le</Text>
-            <Text style={styles.email}>phong123@gmail.com</Text>
+            <Text style={styles.name}>{user?.name || 'User'}!</Text>
+            <Text style={styles.email}>{user?.email || 'User'}!</Text>
           </View>
         </View>
 
@@ -43,15 +70,15 @@ const SettingScreen = () => {
             title="Setting"
             subtitle="Notification, Password, FAQ, Contact"
           />
-          <OptionItem title="Logout"  />
+          <OptionItem title="Logout" onPress={handleLogout} />
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-const OptionItem = ({ title, subtitle }) => (
-  <TouchableOpacity style={styles.optionItem}>
+const OptionItem = ({ title, subtitle, onPress }) => (
+  <TouchableOpacity style={styles.optionItem} onPress={onPress}>
     <View>
       <Text style={styles.optionTitle}>{title}</Text>
       <Text style={styles.optionSubtitle}>{subtitle}</Text>
